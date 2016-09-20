@@ -10,8 +10,10 @@
 #define HandyCypher_h
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-void encryptText(char *text[], char *key[]);
-void decryptText(char *text[], char *key[]);
+void encryptText(char *text, char *key);
+void decryptText(char *text, char *key);
 
 #endif /* HandyCypher_h */

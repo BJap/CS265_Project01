@@ -9,8 +9,12 @@
 #ifndef HCKeyGen_h
 #define HCKeyGen_h
 
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 char *generateKey();
+bool validateKey();
 
 #endif /* HCKeyGen_h */
