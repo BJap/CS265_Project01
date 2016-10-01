@@ -11,4 +11,6 @@
 
 #include <stdio.h>
 
+void crackCypherText(char *cipherText);
+
 #endif /* HCCracker_h */
