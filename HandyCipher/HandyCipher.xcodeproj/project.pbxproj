@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AF2582D21D8294A400F1B496 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = AF2582D11D8294A400F1B496 /* main.c */; };
-		AF2582DA1D87B0D800F1B496 /* HandyCypher.c in Sources */ = {isa = PBXBuildFile; fileRef = AF2582D81D87B0D800F1B496 /* HandyCypher.c */; };
+		AF2582DA1D87B0D800F1B496 /* HandyCipher.c in Sources */ = {isa = PBXBuildFile; fileRef = AF2582D81D87B0D800F1B496 /* HandyCipher.c */; };
 		AF2582E61D87B43400F1B496 /* HCCracker.c in Sources */ = {isa = PBXBuildFile; fileRef = AF2582E41D87B43400F1B496 /* HCCracker.c */; };
 		AF2582F01D8FC27A00F1B496 /* HCKeyGen.c in Sources */ = {isa = PBXBuildFile; fileRef = AF2582EE1D8FC27A00F1B496 /* HCKeyGen.c */; };
 /* End PBXBuildFile section */
@@ -28,8 +28,8 @@
 /* Begin PBXFileReference section */
 		AF2582CE1D8294A400F1B496 /* HandyCipher */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HandyCipher; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF2582D11D8294A400F1B496 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		AF2582D81D87B0D800F1B496 /* HandyCypher.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = HandyCypher.c; sourceTree = "<group>"; };
-		AF2582D91D87B0D800F1B496 /* HandyCypher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HandyCypher.h; sourceTree = "<group>"; };
+		AF2582D81D87B0D800F1B496 /* HandyCipher.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = HandyCipher.c; sourceTree = "<group>"; };
+		AF2582D91D87B0D800F1B496 /* HandyCipher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HandyCipher.h; sourceTree = "<group>"; };
 		AF2582E41D87B43400F1B496 /* HCCracker.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = HCCracker.c; sourceTree = "<group>"; };
 		AF2582E51D87B43400F1B496 /* HCCracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HCCracker.h; sourceTree = "<group>"; };
 		AF2582EE1D8FC27A00F1B496 /* HCKeyGen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = HCKeyGen.c; sourceTree = "<group>"; };
@@ -67,8 +67,8 @@
 			isa = PBXGroup;
 			children = (
 				AF2582D11D8294A400F1B496 /* main.c */,
-				AF2582D81D87B0D800F1B496 /* HandyCypher.c */,
-				AF2582D91D87B0D800F1B496 /* HandyCypher.h */,
+				AF2582D81D87B0D800F1B496 /* HandyCipher.c */,
+				AF2582D91D87B0D800F1B496 /* HandyCipher.h */,
 				AF2582E41D87B43400F1B496 /* HCCracker.c */,
 				AF2582E51D87B43400F1B496 /* HCCracker.h */,
 				AF2582EE1D8FC27A00F1B496 /* HCKeyGen.c */,
@@ -136,7 +136,7 @@
 				AF2582E61D87B43400F1B496 /* HCCracker.c in Sources */,
 				AF2582F01D8FC27A00F1B496 /* HCKeyGen.c in Sources */,
 				AF2582D21D8294A400F1B496 /* main.c in Sources */,
-				AF2582DA1D87B0D800F1B496 /* HandyCypher.c in Sources */,
+				AF2582DA1D87B0D800F1B496 /* HandyCipher.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
