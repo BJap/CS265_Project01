@@ -67,12 +67,12 @@
 			isa = PBXGroup;
 			children = (
 				AF2582D11D8294A400F1B496 /* main.c */,
-				AF2582D81D87B0D800F1B496 /* HandyCipher.c */,
 				AF2582D91D87B0D800F1B496 /* HandyCipher.h */,
-				AF2582E41D87B43400F1B496 /* HCCracker.c */,
+				AF2582D81D87B0D800F1B496 /* HandyCipher.c */,
 				AF2582E51D87B43400F1B496 /* HCCracker.h */,
-				AF2582EE1D8FC27A00F1B496 /* HCKeyGen.c */,
+				AF2582E41D87B43400F1B496 /* HCCracker.c */,
 				AF2582EF1D8FC27A00F1B496 /* HCKeyGen.h */,
+				AF2582EE1D8FC27A00F1B496 /* HCKeyGen.c */,
 			);
 			path = HandyCipher;
 			sourceTree = "<group>";

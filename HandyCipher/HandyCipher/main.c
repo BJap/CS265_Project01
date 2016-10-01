@@ -60,7 +60,7 @@ static void testCracker()
 {
     char *text = strCopy(SIMPLE_CIPHER, strlen(SIMPLE_CIPHER));
     
-    crackCypherText(text);
+    crackCipherText(text);
     
     assert(strcmp(SIMPLE_TEXT, text) == 0 && "Text did not crack correctly and is still the same");
 }
