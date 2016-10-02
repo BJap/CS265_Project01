@@ -7,3 +7,8 @@
 //
 
 #include "HCCracker.h"
+
+void crackCipherText(char *cipherText)
+{
+    
+}
