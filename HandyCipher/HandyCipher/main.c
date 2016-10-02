@@ -8,6 +8,8 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "HandyCipher.h"
 #include "HCCracker.h"
 #include "HCKeyGen.h"

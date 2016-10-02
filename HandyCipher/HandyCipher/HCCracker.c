@@ -8,7 +8,7 @@
 
 #include "HCCracker.h"
 
-char *crackCipherText(char *cipherText)
+char *crackCipherText(char *cipher)
 {
     return "";
 }

@@ -9,8 +9,7 @@
 #ifndef HCCracker_h
 #define HCCracker_h
 
-#include <stdio.h>
-
-char *crackCipherText(char *cipherText);
+// Crack the given cipher text
+char *crackCipherText(char *cipher);
 
 #endif /* HCCracker_h */

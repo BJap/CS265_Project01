@@ -9,11 +9,10 @@
 #ifndef HandyCipher_h
 #define HandyCipher_h
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
+// Encrypt the given text with the given key
 char *encryptText(char *text, char *key);
+
+// Dencrypt the given cipher text with the given key
 char *decryptText(char *cipher, char *key);
 
 #endif /* HandyCipher_h */

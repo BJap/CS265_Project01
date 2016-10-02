@@ -10,15 +10,19 @@
 #define HCKeyGen_h
 
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
+#define random() rand()
+
+// Generate a random key for HC encryption
 char *generateKey();
+
+// Validate that the key matches HandyCipher standards
 bool validateKey();
 
+// Generate a subkey from the given key
 char *generateSubKey(char *key);
 
-void generateSubstitution(char *subKey, char *substitution);
+// Generate the substitution array to be able to map each char to a number
+void generateSubstitution(char *subKey, int *substitution);
 
 #endif /* HCKeyGen_h */

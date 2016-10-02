@@ -7,6 +7,8 @@
 //
 
 #include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
 #include "HCKeyGen.h"
 
 const int KEY_LENGTH = 41;
@@ -56,7 +58,7 @@ char *generateSubKey(char *key)
     return subKey;
 }
 
-void generateSubstitution(char *subKey,  char *substitution)
+void generateSubstitution(char *subKey,  int *substitution)
 {
     size_t length = strlen(subKey);
     
