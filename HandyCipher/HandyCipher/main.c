@@ -8,13 +8,24 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include "HandyCipher.h"
+#include "HCCracker.h"
 #include "HCKeyGen.h"
 
-const char *TEST_KEY = "ON2TP3FLDSMKY,5ACVER7WIH41UG8.960^?-ZXQJB";
-const char *SIMPLE_TEXT = "CATS AND DOGS";
-const char *LONGER_TEXT = "IT HAUNTS ME, THE PASSAGE OF TIME. I THINK TIME IS A MERCILESS THING. I THINK LIFE IS A PROCESS OF BURNING ONESELF OUT AND TIME IS THE FIRE THAT BURNS YOU. BUT I THINK THE SPIRIT OF MAN IS A GOOD ADVERSARY. -- TENNESSEE WILLIAMS";
+const char TEST_KEY[] = "ON2TP3FLDSMKY,5ACVER7WIH41UG8.960^?-ZXQJB";
+const char SIMPLE_TEXT[] = "CATS AND DOGS";
+const char LONGER_TEXT[] = "IT HAUNTS ME, THE PASSAGE OF TIME. I THINK TIME IS A MERCILESS THING. I THINK LIFE IS A PROCESS OF BURNING ONESELF OUT AND TIME IS THE FIRE THAT BURNS YOU. BUT I THINK THE SPIRIT OF MAN IS A GOOD ADVERSARY. -- TENNESSEE WILLIAMS";
 const char SIMPLE_CIPHER[] = "2NTEU2GX1DSOGE4E2MPYKPE?EM-K";
 const char LONG_CIPHER[] = "Z0XSNDPR?EM-OXE8DOM1?PNZ7YZ8-G0ENUZ7TO2D1ZSCRKZPG8-VP?0S21-TDKNK?72DO148ON0?MD0NMGY1M2DP10PCRNKYN80USO78PMN24NXOUYR814E1XD8DNKT0-SYD8?X-84UG7RX0ZGX1?MY1?NKUMXGRGO0D8U0TM2K?MZXCSZ107OP?D7GPGM?107P0?EKP102OP?28TZK8VDZNMTUXK-RGPVOSP?VNTYDS4OCGY7PS2YOZUPG4PG-0ZXUTYMTECX14-0U2-O?T8XTPMY?RY2S?0KP10E?VNYD1R7VYZG81GPRN02M-E41O40DCX7PM2DNY-TDPCV27OSX1M4SNYTMDXDN4E?SNXOZDP4?8G0TCNO82XY7S0?2SZY01ZDVGXRECNZND7SO1PEYKMN8MR2X0ST1CPO8S20R8NUZ41ZDUN8MZXR7Z1D21D?P?4RCM2-8CKENG-TV4ZK8";
+
+char *strCopy(char const *src, size_t len)
+{
+    char *s = malloc(len *sizeof(char));
+    
+    memcpy(s, src, len *sizeof(char));
+    
+    return s;
+}
 
 static void testKeyGen()
 {
@@ -26,17 +37,32 @@ static void testKeyGen()
 
 static void testEncryption()
 {
-    assert(0 == 1 && "Test not yet implemented for Handy Cypher encryption with a key");
+    char *text = strCopy(SIMPLE_TEXT, strlen(SIMPLE_TEXT));
+    char *key = strCopy(TEST_KEY, strlen(TEST_KEY));
+    
+    encryptText(text, key);
+    
+    assert(strcmp(SIMPLE_TEXT, text) != 0 && "Text did not encrypt and is still the same");
+    assert(strlen(SIMPLE_TEXT) < strlen(text) && "Text did not encrypt correctly and is still the same length");
 }
 
 static void testDecryption()
 {
-    assert(0 == 1 && "Test not yet implemented for Handy Cypher decryption with a key");
+    char *text = strCopy(SIMPLE_CIPHER, strlen(SIMPLE_CIPHER));
+    char *key = strCopy(TEST_KEY, strlen(TEST_KEY));
+    
+    decryptText(text, key);
+
+    assert(strcmp(SIMPLE_TEXT, text) == 0 && "Text did not decrypt correctly");
 }
 
 static void testCracker()
 {
-    assert(0 == 1 && "Test not yet implemented for Handy Cypher decryption with a cracker");
+    char *text = strCopy(SIMPLE_CIPHER, strlen(SIMPLE_CIPHER));
+    
+    crackCipherText(text);
+    
+    assert(strcmp(SIMPLE_TEXT, text) == 0 && "Text did not crack correctly and is still the same");
 }
 
 int main(int argc, const char * argv[])

@@ -11,7 +11,7 @@
 
 const int KEY_LENGTH = 41;
 const int SUBKEY_LENGTH = 31;
-const char *ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ,.-?^0123456789";
+const char ALPHABET[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ,.-?^0123456789";
 
 char *generateKey()
 {
