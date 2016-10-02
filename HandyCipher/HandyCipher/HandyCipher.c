@@ -22,18 +22,6 @@ static struct table generateTable(char *key)
     return keyTable;
 }
 
-static char *subKey(char *key)
-{
-    char *subKey[31];
-    
-    for (int i = 0; i < strlen(key); i++)
-    {
-        // TODO
-    }
-    
-    return *subKey;
-}
-
 static char *tuple(struct table keyTable, char letter)
 {
     char *tuple;

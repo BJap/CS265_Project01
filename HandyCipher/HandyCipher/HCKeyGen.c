@@ -6,14 +6,16 @@
 //  Copyright © 2016 Bobby Jap, Ravee Khandagale. All rights reserved.
 //
 
+#include <ctype.h>
 #include "HCKeyGen.h"
 
 const int KEY_LENGTH = 41;
+const int SUBKEY_LENGTH = 31;
 const char ALPHABET[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ,.-?^0123456789";
 
 char *generateKey()
 {
-    char *subKey = malloc(31);
+    char *subKey = malloc(KEY_LENGTH);
     
     return subKey;
 }
@@ -34,4 +36,22 @@ bool validateKey(char *key)
     }
     
     return 1;
+}
+
+char *subKey(char *key)
+{
+    long length = strlen(key);
+    char *subKey = malloc(SUBKEY_LENGTH);
+    
+    for (int i = 0, point = 0; i < length; i++)
+    {
+        if (!isdigit(key[i]))
+        {
+            subKey[point] = key[i];
+            
+            point++;
+        }
+    }
+    
+    return subKey;
 }
