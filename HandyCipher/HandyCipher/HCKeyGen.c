@@ -26,10 +26,9 @@ bool validateKey(char *key)
 {
     if (strlen(key) != KEY_LENGTH) return false;
     
-    int i;
     char c;
     
-    for (i = 0; i < KEY_LENGTH; i++)
+    for (int i = 0; i < KEY_LENGTH; i++)
     {
         c = key[i];
         
@@ -42,17 +41,12 @@ bool validateKey(char *key)
 
 char *generateSubKey(char *key)
 {
-    size_t length = strlen(key);
+    size_t keyLen = strlen(key);
     char *subKey = malloc(SUBKEY_LENGTH);
     
-    for (int i = 0, point = 0; i < length; i++)
+    for (int i = 0, subKeyPos = 0; i < keyLen; i++)
     {
-        if (!isdigit(key[i]))
-        {
-            subKey[point] = key[i];
-            
-            point++;
-        }
+        if (!isdigit(key[i])) subKey[subKeyPos++] = key[i];
     }
     
     return subKey;
