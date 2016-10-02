@@ -15,9 +15,9 @@ const char ALPHABET[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ,.-?^0123456789";
 
 char *generateKey()
 {
-    char *subKey = malloc(KEY_LENGTH);
+    char *key = malloc(KEY_LENGTH);
     
-    return subKey;
+    return key;
 }
 
 bool validateKey(char *key)
@@ -38,9 +38,9 @@ bool validateKey(char *key)
     return 1;
 }
 
-char *subKey(char *key)
+char *generateSubKey(char *key)
 {
-    long length = strlen(key);
+    size_t length = strlen(key);
     char *subKey = malloc(SUBKEY_LENGTH);
     
     for (int i = 0, point = 0; i < length; i++)
@@ -54,4 +54,14 @@ char *subKey(char *key)
     }
     
     return subKey;
+}
+
+void generateSubstitution(char *subKey,  char *substitution)
+{
+    size_t length = strlen(subKey);
+    
+    for (int i = 0; i < length; i++)
+    {
+        substitution[subKey[i]] = i + 1;
+    }
 }

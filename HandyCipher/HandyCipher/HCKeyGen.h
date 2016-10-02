@@ -17,6 +17,8 @@
 char *generateKey();
 bool validateKey();
 
-char *subKey(char *key);
+char *generateSubKey(char *key);
+
+void generateSubstitution(char *subKey, char *substitution);
 
 #endif /* HCKeyGen_h */

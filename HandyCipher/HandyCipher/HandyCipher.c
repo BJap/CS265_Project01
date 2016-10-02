@@ -7,9 +7,11 @@
 //
 
 #include "HandyCipher.h"
+#include "HCKeyGen.h"
 
 static char keyTable[5][5];
 static char padTable[15];
+static char substitution[128];
 
 static void generateTables(char *key)
 {
@@ -44,7 +46,10 @@ char *encryptText(char *text, char *key)
     char *cipher = malloc(10 * strlen(cipher));
     cipher[0] = '\0';
     
+    char *subKey = generateSubKey(key);
+    
     generateTables(key);
+    generateSubstitution(subKey, substitution);
     
     // TODO
     

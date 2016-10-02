@@ -45,7 +45,7 @@ static void testCracker()
 {
     char *text = crackCipherText(SIMPLE_CIPHER);
     
-    assert(strcmp(SIMPLE_TEXT, text) == 0 && "Text did not crack correctly and is still the same");
+    assert(strcmp(SIMPLE_TEXT, text) == 0 && "Text did not crack correctly");
 }
 
 int main(int argc, const char * argv[])
