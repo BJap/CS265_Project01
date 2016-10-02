@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void encryptText(char *text, char *key);
-void decryptText(char *text, char *key);
+char *encryptText(char *text, char *key);
+char *decryptText(char *cipher, char *key);
 
 #endif /* HandyCipher_h */

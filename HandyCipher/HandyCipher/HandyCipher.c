@@ -8,21 +8,29 @@
 
 #include "HandyCipher.h"
 
-struct table
-{
-    char *table[5][8];
-};
+static char keyTable[5][5];
+static char padTable[15];
 
-static struct table generateTable(char *key)
+static void generateTables(char *key)
 {
-    struct table keyTable;
+    int kp = 0;
+    int pp = 0;
     
-    // TODO
-    
-    return keyTable;
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            char c = key[kp++];
+            
+            if (c == '^') c = key[kp++];
+            
+            if (j < 5) keyTable[i][j] = c;
+            else padTable[pp++] = c;
+        }
+    }
 }
 
-static char *tuple(struct table keyTable, char letter)
+static char *tuple(int letterNum)
 {
     char *tuple;
     
@@ -31,12 +39,26 @@ static char *tuple(struct table keyTable, char letter)
     return tuple;
 }
 
-void encryptText(char *text, char *key)
+char *encryptText(char *text, char *key)
 {
+    char *cipher = malloc(10 * strlen(cipher));
+    cipher[0] = '\0';
+    
+    generateTables(key);
+    
     // TODO
+    
+    return cipher;
 }
 
-void decryptText(char *text, char *key)
+char *decryptText(char *cipher, char *key)
 {
+    char *text = malloc(strlen(cipher));
+    text[0] = '\0';
+    
+    generateTables(key);
+    
     // TODO
+    
+    return text;
 }
