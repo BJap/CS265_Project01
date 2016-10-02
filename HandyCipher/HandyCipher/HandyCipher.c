@@ -11,6 +11,8 @@
 #include "HandyCipher.h"
 #include "HCKeyGen.h"
 
+const int TUPLE_COUNT = 20;
+
 static char keyTable[5][5];     // key table
 static char padTable[15];       // padding table
 static int  charMap[128];       // character to number mapping
@@ -24,10 +26,10 @@ static char lastTuple[6];       // the last character substitution string create
 #define random() rand()
 
 // The amount of permututations (n!) for characters in subTuple
-int permCount[5] = { 1, 2, 6, 24, 120 };
+const int PERM_COUNT[5] = { 1, 2, 6, 24, 120 };
 
 // Permutation Tables
-int permTables [120][5] =
+const int PERM_TABLES [120][5] =
 {
     { 0, 1, 2, 3, 4 },
     { 1, 0, 2, 3, 4 },
@@ -295,7 +297,7 @@ char *encryptText(char *text, char *key)
         // generate a line until one satisfies the restrictions for the cipher
         do
         {
-            randTup = random() % (singleton ? 5 : 20);
+            randTup = random() % (singleton ? 5 : TUPLE_COUNT);
             
             createTuple(randTup);
             
@@ -311,12 +313,12 @@ char *encryptText(char *text, char *key)
             
             subTuple[subTupLen] = '\0';
             
-            int randPerm = random() % permCount[subTupLen - 1];
+            int randPerm = random() % PERM_COUNT[subTupLen - 1];
             
             // reorder the line chosen for substitution
             for (int j = 0; j < subTupLen; j++)
             {
-                mixTuple[j] = subTuple[permTables[randPerm][j]];
+                mixTuple[j] = subTuple[PERM_TABLES[randPerm][j]];
             }
             
             mixTuple[subTupLen] = '\0';

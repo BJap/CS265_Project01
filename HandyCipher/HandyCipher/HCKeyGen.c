@@ -54,9 +54,9 @@ char *generateSubKey(char *key)
 
 void generateSubstitution(char *subKey,  int *substitution)
 {
-    size_t length = strlen(subKey);
+    size_t subKeyLen = strlen(subKey);
     
-    for (int i = 0; i < length; i++)
+    for (int i = 0; i < subKeyLen; i++)
     {
         substitution[subKey[i]] = i + 1;
     }
