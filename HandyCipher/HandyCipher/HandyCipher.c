@@ -22,6 +22,7 @@ static int  charMap[128];       // character to number mapping
 static char subTuple[6];        // the characters matching with '1' bits of the number for the character mapping
 static char mixTuple[6];        // the random arragement of the selected characters in subTuple
 static char lastTuple[6];       // the last character substitution string created that meets all requirements
+static char lastMixTuple[6];    // the last random arragement of the selected characters in lastTuple
 
 static int pairMap[128];        // character to table position encoding mapping
 
@@ -267,13 +268,13 @@ static bool validateLine(int randTup, char next, bool singletonLast)
                 {
                     for (int k = 0; k < 5; k++)
                     {
-                        if (T[i][k] == lastTuple[0]) return false;
+                        if (T[i][k] == lastMixTuple[0]) return false;
                         
-                        if (T[k][j] == lastTuple[0]) return false;
+                        if (T[k][j] == lastMixTuple[0]) return false;
                         
-                        if (T[i + k < 5 ? i + k : i + k - 5][j + k < 5 ? j + k : j + k - 5] == lastTuple[0]) return false;
+                        if (T[i + k < 5 ? i + k : i + k - 5][j + k < 5 ? j + k : j + k - 5] == lastMixTuple[0]) return false;
                         
-                        if (T[i + k < 5 ? i + k : i + k - 5][j - k >= 0 ? j - k : j - k + 5] == lastTuple[0]) return false;
+                        if (T[i + k < 5 ? i + k : i + k - 5][j - k >= 0 ? j - k : j - k + 5] == lastMixTuple[0]) return false;
                     }
                 }
             }
@@ -302,6 +303,9 @@ char *encryptText(char *text, char *key)
     for (int i = 0; i < textLength; i++)
     {
         char c = text[i];
+        
+        if (c == ' ') c = '^';
+        
         int charValue = charMap[c];
         
         if (charValue == 0) continue;
@@ -347,10 +351,13 @@ char *encryptText(char *text, char *key)
         }
         
         // save current values as last values for the next round comparisons per handy cipher restrictions
-        memcpy(lastTuple, mixTuple, 6);
+        memcpy(lastTuple, tuple, 6);
+        memcpy(lastMixTuple, mixTuple, 6);
         
         singletonLast = singleton;
     }
+    
+    cipher[cipherPos] = '\0';
     
     return cipher;
 }
