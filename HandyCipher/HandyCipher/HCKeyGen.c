@@ -17,7 +17,24 @@ const char ALPHABET[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ,.-?^0123456789";
 
 char *generateKey()
 {
-    char *key = malloc(KEY_LENGTH);
+    char *key = malloc(KEY_LENGTH + 1);
+    
+    for (int i = 0; i < KEY_LENGTH; i++)
+    {
+        char c;
+        
+        do
+        {
+            int r = random() % KEY_LENGTH;
+            
+            c = ALPHABET[r];
+            
+        } while (memchr(key, c, i) != NULL);
+        
+        key[i] = c;
+    }
+    
+    key[KEY_LENGTH] = '\0';
     
     return key;
 }
@@ -42,12 +59,14 @@ bool validateKey(char *key)
 char *generateSubKey(char *key)
 {
     size_t keyLen = strlen(key);
-    char *subKey = malloc(SUBKEY_LENGTH);
+    char *subKey = malloc(SUBKEY_LENGTH + 1);
     
     for (int i = 0, subKeyPos = 0; i < keyLen; i++)
     {
         if (!isdigit(key[i])) subKey[subKeyPos++] = key[i];
     }
+    
+    subKey[SUBKEY_LENGTH] = '\0';
     
     return subKey;
 }
