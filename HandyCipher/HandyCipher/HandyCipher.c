@@ -14,21 +14,25 @@
 
 const int TUPLE_COUNT = 20;
 
+#pragma mark SHARED VARIABLES
+static int  cipherPos = 0;      // current slot in the cipher to encrypt into or from which to decrypt
 static char keyTable[5][5];     // key table
 static char padTable[15];       // padding table
 static char tuple[6];           // the row, column, or diagonal randomly selected
 
+#define T keyTable
+#define e tuple
+#define random() rand()
+
+#pragma mark ENCRYPTION VARIABLES
 static int  charMap[128];       // character to number mapping
 static char subTuple[6];        // the characters matching with '1' bits of the number for the character mapping
 static char mixTuple[6];        // the random arragement of the selected characters in subTuple
 static char lastTuple[6];       // the last character substitution string created that meets all requirements
 static char lastMixTuple[6];    // the last random arragement of the selected characters in lastTuple
 
+#pragma mark DECRYPTION VARIABLES
 static int pairMap[128];        // character to table position encoding mapping
-
-#define T keyTable
-#define e tuple
-#define random() rand()
 
 #pragma mark LOOKUP TABLES
 
@@ -179,7 +183,7 @@ const int PERM_TABLES [120][5] =
     { 4, 3, 2, 1, 0 },
 };
 
-// Generate the two tables for encryption/decryption, and padding
+// Generate the three tables for encryption/decryption, padding, and number to character mapping
 static void generateTables(char *key)
 {
     memset(pairMap, -1, 128 * sizeof(int));
@@ -288,7 +292,7 @@ char *encryptText(char *text, char *key)
 {
     bool singletonLast = false;
     
-    int cipherPos = 0;
+    cipherPos = 0;
     
     char *cipher = malloc(10 * strlen(text));
     cipher[0] = '\0';
@@ -305,6 +309,7 @@ char *encryptText(char *text, char *key)
     {
         char c = text[i];
         
+        // convert spaces into the encryptable character
         if (c == ' ') c = '^';
         
         int charValue = charMap[c];
@@ -365,10 +370,8 @@ char *encryptText(char *text, char *key)
 
 #pragma mark DECRYPTION STARTS HERE
 
-static int cipherPos = 0;
-
-// Find the next non-padding character's encoding pair (or -1 at end of string)
-static int getNextChar(char *cipher)
+// Find the next non-padding character's encoding pair or EOF at end of string
+static char getNextChar(char *cipher)
 {
     char c;
     
@@ -378,6 +381,7 @@ static int getNextChar(char *cipher)
         
         int pair = pairMap[c];
         
+        // the character is in the key table and not the padding table
         if (pair != -1) return c;
     }
     
@@ -393,13 +397,14 @@ char *decryptText(char *cipher, char *key)
     cipherPos = 0;
     generateTables(key);
     
+    // decrypt each character in the cipher
     while (true)
     {
         int charInPos = 0;
         char charIn[6];
         char c1 = getNextChar(cipher);
         
-        // no more cipher text
+        // no more cipher text to decrypt
         if (c1 == EOF) break;
         
         int pair1 = pairMap[c1];
@@ -417,7 +422,7 @@ char *decryptText(char *cipher, char *key)
         // not a singleton
         if (c2 != EOF && pair2 != -1) charIn[charInPos++] = c2;
 
-        // end of file singleton
+        // end of text singleton
         if (charInPos == 1)
         {
             for (int i = 0; i < 5; i++)
@@ -472,17 +477,21 @@ char *decryptText(char *cipher, char *key)
         
         e[5] = '\0';
         
+        // grab all the remaining characters for the current letter substitution
         while ((c1 = getNextChar(cipher)) != EOF)
         {
+            // the next character is in the next substitution and should be put back
             if (memchr(e, c1, 5) == NULL)
             {
                 cipherPos--;
                 break;
             }
+            // this character belongs in this substition so store it
             else
             {
                 charIn[charInPos++] = c1;
                 
+                // something is wrong if we get more than 5 characters from a substitution
                 if (charInPos > 5)
                 {
                     fprintf(stderr, "Too many characters\n");
@@ -500,8 +509,10 @@ char *decryptText(char *cipher, char *key)
         bool oddPos = (textPos % 2) == 0;
         int mask = oddPos ? 0x10 : 0x01;
         
+        // calculate b for the characters given in the tuple
         for (int i = 0; i < 5; i++)
         {
+            // add a '1' bit if the character is in the substitution
             if (memchr(charIn, e[i], charInPos) != NULL) b |= mask;
             
             mask = oddPos ? mask >> 1 : mask << 1;
@@ -509,6 +520,7 @@ char *decryptText(char *cipher, char *key)
         
         char decodedChar = subKey[b - 1];
         
+        // convert spaces back into the proper character
         if (decodedChar == '^') decodedChar = ' ';
         
         text[textPos++] = decodedChar;

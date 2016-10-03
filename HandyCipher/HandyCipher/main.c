@@ -25,6 +25,8 @@ static void testKeyGen()
     bool validKey = validateKey(key);
     
     assert(validKey && "The key generator generated an invalid key");
+    
+    free(key);
 }
 
 static void testEncryption(char *text)
@@ -33,6 +35,8 @@ static void testEncryption(char *text)
     
     assert(strcmp(text, cipher) != 0 && "Text did not encrypt and is still the same");
     assert(strlen(text) < strlen(cipher) && "Text did not encrypt correctly and is still the same length");
+    
+    free(cipher);
 }
 
 static void testDecryption(char *cipher, char *expected)
@@ -40,6 +44,8 @@ static void testDecryption(char *cipher, char *expected)
     char *text = decryptText(cipher, TEST_KEY);
 
     assert(strcmp(expected, text) == 0 && "Text did not decrypt correctly");
+    
+    free(text);
 }
 
 static void testEncryptionDecryption(char *plainText)
@@ -48,6 +54,9 @@ static void testEncryptionDecryption(char *plainText)
     char *text = decryptText(cipher, TEST_KEY);
     
     assert(strcmp(plainText, text) == 0 && "Text did not encrypt then decrypt correctly");
+    
+    free(text);
+    free(cipher);
 }
 
 static void testCracker()
@@ -55,6 +64,8 @@ static void testCracker()
     char *text = crackCipherText(SIMPLE_CIPHER);
     
     assert(strcmp(SIMPLE_TEXT, text) == 0 && "Text did not crack correctly");
+    
+    free(text);
 }
 
 int main(int argc, const char * argv[])
