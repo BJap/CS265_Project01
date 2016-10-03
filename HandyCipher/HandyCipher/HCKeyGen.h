@@ -11,7 +11,9 @@
 
 #include <stdbool.h>
 
-#define random() rand()
+#define KEY_LENGTH 41
+#define SUBKEY_LENGTH 31
+#define ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZ,.-?^0123456789"
 
 // Generate a random key for HC encryption
 char *generateKey();

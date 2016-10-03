@@ -12,7 +12,7 @@
 #include "HandyCipher.h"
 #include "HCKeyGen.h"
 
-const int TUPLE_COUNT = 20;
+#define TUPLE_COUNT 20
 
 #pragma mark SHARED VARIABLES
 static int  cipherPos = 0;      // current slot in the cipher to encrypt into or from which to decrypt

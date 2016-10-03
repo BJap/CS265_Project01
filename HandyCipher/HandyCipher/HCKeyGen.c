@@ -11,9 +11,7 @@
 #include <string.h>
 #include "HCKeyGen.h"
 
-const int KEY_LENGTH = 41;
-const int SUBKEY_LENGTH = 31;
-const char ALPHABET[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ,.-?^0123456789";
+#define random() rand()
 
 char *generateKey()
 {
