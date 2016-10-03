@@ -498,7 +498,6 @@ char *decryptText(char *cipher, char *key)
             mask = oddPos ? mask >> 1 : mask << 1;
         }
         
-        text[textPos++] = subKey[b - 1];
         char decodedChar = subKey[b - 1];
         
         if (decodedChar == '^') decodedChar = ' ';

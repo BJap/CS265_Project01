@@ -7,7 +7,6 @@
 //
 
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "HandyCipher.h"
@@ -39,8 +38,6 @@ static void testEncryption()
 static void testDecryption()
 {
     char *text = decryptText(SIMPLE_CIPHER, TEST_KEY);
-    
-    printf("%s\n", text);
 
     assert(strcmp(SIMPLE_TEXT, text) == 0 && "Text did not decrypt correctly");
 }
@@ -54,8 +51,8 @@ static void testCracker()
 
 int main(int argc, const char * argv[])
 {
-//    testKeyGen();
-//    testEncryption();
+    testKeyGen();
+    testEncryption();
     testDecryption();
     testCracker();
     
