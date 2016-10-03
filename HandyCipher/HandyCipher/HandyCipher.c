@@ -437,7 +437,7 @@ char *decryptText(char *cipher, char *key)
         {
             for (int i = 0; i < 5; i++)
             {
-                e[i] = T[i][(j1 + i1 + i + 5) % 5];
+                e[i] = T[i][(j1 - i1 + i + 5) % 5];
             }
         }
         // same left diagonal
@@ -461,6 +461,8 @@ char *decryptText(char *cipher, char *key)
             cipherPos--;
         }
         
+        e[5] = '\0';
+        
         while ((c1 = getNextChar(cipher)) != EOF)
         {
             if (memchr(e, c1, 5) == NULL)
@@ -483,6 +485,8 @@ char *decryptText(char *cipher, char *key)
             }
         }
         
+        charIn[charInPos] = '\0';
+        
         int b = 0;
         bool oddPos = (textPos % 2) == 0;
         int mask = oddPos ? 0x10 : 0x01;
@@ -495,6 +499,11 @@ char *decryptText(char *cipher, char *key)
         }
         
         text[textPos++] = subKey[b - 1];
+        char decodedChar = subKey[b - 1];
+        
+        if (decodedChar == '^') decodedChar = ' ';
+        
+        text[textPos++] = decodedChar;
     }
     
     text[textPos] = '\0';
