@@ -289,7 +289,8 @@ char *encryptText(char *text, char *key)
     bool singletonLast = false;
     
     int cipherPos = 0;
-    char *cipher = malloc(10 * strlen(cipher));
+    
+    char *cipher = malloc(10 * strlen(text));
     cipher[0] = '\0';
     
     char *subKey = generateSubKey(key);
@@ -389,6 +390,7 @@ char *decryptText(char *cipher, char *key)
     char *text = malloc(strlen(cipher));
     char *subKey = generateSubKey(key);
     
+    cipherPos = 0;
     generateTables(key);
     
     while (true)
