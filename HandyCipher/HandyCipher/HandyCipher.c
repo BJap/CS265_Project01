@@ -7,6 +7,7 @@
 //
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "HandyCipher.h"
 #include "HCKeyGen.h"
@@ -15,15 +16,20 @@ const int TUPLE_COUNT = 20;
 
 static char keyTable[5][5];     // key table
 static char padTable[15];       // padding table
-static int  charMap[128];       // character to number mapping
 static char tuple[6];           // the row, column, or diagonal randomly selected
+
+static int  charMap[128];       // character to number mapping
 static char subTuple[6];        // the characters matching with '1' bits of the number for the character mapping
-static char mixTuple[6];        // the random arragement of the selected characters in eSelect
+static char mixTuple[6];        // the random arragement of the selected characters in subTuple
 static char lastTuple[6];       // the last character substitution string created that meets all requirements
+
+static int pairMap[128];        // character to table position encoding mapping
 
 #define T keyTable
 #define e tuple
 #define random() rand()
+
+#pragma mark LOOKUP TABLES
 
 // The amount of permututations (n!) for characters in subTuple
 const int PERM_COUNT[5] = { 1, 2, 6, 24, 120 };
@@ -175,6 +181,8 @@ const int PERM_TABLES [120][5] =
 // Generate the two tables for encryption/decryption, and padding
 static void generateTables(char *key)
 {
+    memset(pairMap, -1, 128 * sizeof(int));
+    
     int keyPos = 0;
     int padPos = 0;
     
@@ -186,11 +194,17 @@ static void generateTables(char *key)
             
             if (c == '^') c = key[keyPos++];
             
-            if (j < 5) keyTable[i][j] = c;
+            if (j < 5)
+            {
+                keyTable[i][j] = c;
+                pairMap[c] = (i << 4) + j;
+            }
             else padTable[padPos++] = c;
         }
     }
 }
+
+#pragma mark ENCRYPTION STARTS HERE
 
 // Check to see if the encoding has only one bit in it
 static bool isSingleton(int charValue)
@@ -239,8 +253,10 @@ static bool validateLine(int randTup, char next, bool singletonLast)
     // the new line is invalid if the first character was in the last line added to the cipher
     if (strchr(lastTuple, mixTuple[0]) != NULL) return false;
     
+    // there is a bug in the cipher for which this check accounts
     if (randTup >= 5 && randTup <= 9 && isSingleton(charMap[next])) return false;
     
+    // the first letter of the next tuple cannot be colinear with the previous tuple if it was a singleton
     if (singletonLast)
     {
         for (int i = 0; i < 5; i++)
@@ -271,6 +287,7 @@ char *encryptText(char *text, char *key)
 {
     bool singletonLast = false;
     
+    int cipherPos = 0;
     char *cipher = malloc(10 * strlen(cipher));
     cipher[0] = '\0';
     
@@ -280,8 +297,6 @@ char *encryptText(char *text, char *key)
     generateSubstitution(subKey, charMap);
     
     size_t textLength = strlen(text);
-    
-    int cipherPos = 0;
     
     // find a line to substitute in for each character in the text
     for (int i = 0; i < textLength; i++)
@@ -331,6 +346,7 @@ char *encryptText(char *text, char *key)
             cipher[cipherPos++] = mixTuple[j];
         }
         
+        // save current values as last values for the next round comparisons per handy cipher restrictions
         memcpy(lastTuple, mixTuple, 6);
         
         singletonLast = singleton;
@@ -339,16 +355,158 @@ char *encryptText(char *text, char *key)
     return cipher;
 }
 
+#pragma mark DECRYPTION STARTS HERE
+
+static int cipherPos = 0;
+
+// Find the next non-padding character's encoding pair (or -1 at end of string)
+static int getNextChar(char *cipher)
+{
+    char c;
+    
+    while ((c = cipher[cipherPos]) != '\0')
+    {
+        cipherPos++;
+        
+        int pair = pairMap[c];
+        
+        if (pair != -1) return c;
+    }
+    
+    return EOF;
+}
+
 char *decryptText(char *cipher, char *key)
 {
+    int textPos = 0;
     char *text = malloc(strlen(cipher));
-    text[0] = '\0';
-    
     char *subKey = generateSubKey(key);
     
     generateTables(key);
     
-    // TODO
+    while (true)
+    {
+        int charInPos = 0;
+        char charIn[6];
+        char c1 = getNextChar(cipher);
+        
+        // no more cipher text
+        if (c1 == EOF) break;
+        
+        int pair1 = pairMap[c1];
+        int i1 = (pair1 >> 4) & 0x7;
+        int j1 = pair1 & 0x7;
+        
+        charIn[charInPos++] = c1;
+        
+        char c2 = getNextChar(cipher);
+        
+        int pair2 = pairMap[c2];
+        int i2 = (pair2 >> 4) & 0x7;
+        int j2 = pair2 & 0x7;
+        
+        // not a singleton
+        if (c2 != EOF && pair2 != -1) charIn[charInPos++] = c2;
+
+        // end of file singleton
+        if (charInPos == 1)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                e[i] = T[i][j1];
+            }
+        }
+        // same column
+        else if (j1 == j2)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                e[i] = T[i][j1];
+            }
+        }
+        // same row
+        else if (i1 == i2)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                e[j] = T[i1][j];
+            }
+        }
+        // same right diagonal
+        else if ((((i2 - i1) - (j2 - j1)) % 5) == 0)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                e[i] = T[i][(j1 - i1 + i + 5) % 5];
+            }
+        }
+        // same left diagonal
+        else if ((((i2 - i1) + (j2 - j1)) % 5) == 0)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                e[i] = T[i][(j1 + i1 - i + 5) % 5];
+            }
+        }
+        // non-colinear
+        else
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                e[i] = T[i][j1];
+            }
+            
+            charIn[charInPos] = '\0';
+            
+            cipherPos--;
+        }
+        
+        e[5] = '\0';
+        
+        while ((c1 = getNextChar(cipher)) != EOF)
+        {
+            if (memchr(e, c1, 5) == NULL)
+            {
+                cipherPos--;
+                break;
+            }
+            else
+            {
+                charIn[charInPos++] = c1;
+                
+                if (charInPos > 5)
+                {
+                    fprintf(stderr, "Too many characters\n");
+                    
+                    text[textPos] = '\0';
+                    
+                    return NULL;
+                }
+            }
+        }
+        
+        charIn[charInPos] = '\0';
+        
+        int b = 0;
+        bool oddPos = (textPos % 2) == 0;
+        int mask = oddPos ? 0x10 : 0x01;
+        
+        for (int i = 0; i < 5; i++)
+        {
+            if (memchr(charIn, e[i], charInPos) != NULL) b |= mask;
+            
+            mask = oddPos ? mask >> 1 : mask << 1;
+        }
+        
+        text[textPos++] = subKey[b - 1];
+        char decodedChar = subKey[b - 1];
+        
+        if (decodedChar == '^') decodedChar = ' ';
+        
+        text[textPos++] = decodedChar;
+    }
+    
+    text[textPos] = '\0';
     
     return text;
 }
