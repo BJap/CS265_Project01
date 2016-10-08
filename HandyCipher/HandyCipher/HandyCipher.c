@@ -30,6 +30,7 @@ static char subTuple[6];        // the characters matching with '1' bits of the 
 static char mixTuple[6];        // the random arragement of the selected characters in subTuple
 static char lastTuple[6];       // the last character substitution string created that meets all requirements
 static char lastMixTuple[6];    // the last random arragement of the selected characters in lastTuple
+static char lastNull[6];        // the last null characters used that cannot be reused
 
 #pragma mark DECRYPTION VARIABLES
 static int pairMap[128];        // character to table position encoding mapping
@@ -288,6 +289,42 @@ static bool validateLine(int randTup, char next, bool singletonLast)
     return true;
 }
 
+// Find the next valid null character
+static char getNextNull()
+{
+    char next;
+    bool valid;
+    
+    // get a valid null character
+    do
+    {
+        int randPad = random() % 15;
+        
+        next = padTable[randPad];
+        
+        // check for the character in the last used table and throw it out
+        // with probability relative to how recently it was used
+        for (int i = 0; i < 5; i++)
+        {
+            valid = next == lastNull[i] && random() % 5 > i;
+        }
+        
+        valid = true;
+        
+    } while (!valid);
+    
+    // move each null character forward
+    for (int i = 4; i >= 0; i--)
+    {
+        lastNull[i + 1] = lastNull[i];
+    }
+    
+    lastNull[0] = next;
+    lastNull[5] = '\0';
+    
+    return next;
+}
+
 char *encryptText(char *text, char *key)
 {
     bool singletonLast = false;
@@ -318,6 +355,7 @@ char *encryptText(char *text, char *key)
         
         bool singleton = isSingleton(charValue);
         int randTup;
+        int subTupLen;
         
         // generate a line until one satisfies the restrictions for the cipher
         do
@@ -327,7 +365,7 @@ char *encryptText(char *text, char *key)
             createTuple(randTup);
             
             bool oddPos = (i % 2) == 0;
-            int subTupLen = 0;
+            subTupLen = 0;
             
             // select the letters from the tuple that align with the '1's in the binary of the number
             // for the given character and in the correct direction
@@ -349,6 +387,14 @@ char *encryptText(char *text, char *key)
             mixTuple[subTupLen] = '\0';
             
         } while (!validateLine(randTup, text[i + 1], singletonLast));
+        
+        // add padding
+        for (int j = subTupLen; j < 5; j++)
+        {
+            char randPad = getNextNull();
+            
+            subTuple[subTupLen++] = padTable[randPad];
+        }
         
         // concatenate the line onto the cipher text
         for (int j = 0; mixTuple[j] != '\0'; j++)
