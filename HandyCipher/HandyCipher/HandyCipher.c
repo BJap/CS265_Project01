@@ -12,8 +12,6 @@
 #include "HandyCipher.h"
 #include "HCKeyGen.h"
 
-#define TUPLE_COUNT 20
-
 #pragma mark SHARED VARIABLES
 static int  cipherPos = 0;      // current slot in the cipher to encrypt into or from which to decrypt
 static char keyTable[5][5];     // key table
@@ -360,7 +358,7 @@ char *encryptText(char *text, char *key)
         // generate a line until one satisfies the restrictions for the cipher
         do
         {
-            randTup = random() % (singleton ? 5 : TUPLE_COUNT);
+            randTup = random() % (singleton ? 5 : 20);
             
             createTuple(randTup);
             
