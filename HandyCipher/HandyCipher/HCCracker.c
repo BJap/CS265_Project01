@@ -9,18 +9,32 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "HandyCipher.h"
 #include "HCCracker.h"
 #include "HCKeyGen.h"
 
+#define MAX_BRUTE_ATTEMPTS 1000000
+
 static char pKey[KEY_LENGTH + 1];
+static int bruteCount = 0;
+static time_t bruteStart;
 
 // Recursively check every key until the first possible candidate is found
 static bool permute(char *cipher, int depth)
 {
     if (depth == KEY_LENGTH)
     {
-        printf("Attempt to crack using key: %s\n", pKey);
+        
+        if (bruteCount == MAX_BRUTE_ATTEMPTS)
+        {
+            time_t bruteEnd = time(NULL);
+            int time = (int) (bruteEnd - bruteStart);
+            
+            printf("%d keys tried already with %d second(s) passed\n", MAX_BRUTE_ATTEMPTS , time);
+        }
+        
+        bruteCount++;
         
         char *text = decryptText(cipher, pKey);
         
@@ -48,9 +62,7 @@ static bool permute(char *cipher, int depth)
             pKey[depth] = pKey[i];
             pKey[i] = temp;
             
-            bool found = permute(cipher, depth + 1);
-            
-            if (found) return found;
+            if (permute(cipher, depth + 1)) return true;
         }
     }
     
@@ -61,6 +73,8 @@ static bool permute(char *cipher, int depth)
 static void bruteForce(char *cipher)
 {
     memcpy(pKey, ALPHABET, KEY_LENGTH + 1);
+    bruteCount = 0;
+    bruteStart = time(NULL);
     
     permute(cipher, 0);
 }
