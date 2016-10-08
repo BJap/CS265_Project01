@@ -61,7 +61,7 @@ static void testEncryptionDecryption(char *plainText)
 
 static void testCracker(char *cipher, char *expected)
 {
-    char *text = crackCipherText(cipher);
+    char *text = bruteForce(cipher);
 
     assert(strcmp(expected, text) == 0 && "Text did not crack correctly");
     

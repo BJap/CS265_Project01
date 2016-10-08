@@ -70,18 +70,13 @@ static bool permute(char *cipher, int depth)
 }
 
 // Brute force approach to try every possible key until one is found
-static void bruteForce(char *cipher)
+char *bruteForce(char *cipher)
 {
     memcpy(pKey, ALPHABET, KEY_LENGTH + 1);
     bruteCount = 0;
     bruteStart = time(NULL);
     
     permute(cipher, 0);
-}
-
-char *crackCipherText(char *cipher)
-{
-    bruteForce(cipher);
     
     printf("Possible key is: %s\n", pKey);
     

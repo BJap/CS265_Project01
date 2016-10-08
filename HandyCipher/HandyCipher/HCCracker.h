@@ -9,7 +9,7 @@
 #ifndef HCCracker_h
 #define HCCracker_h
 
-// Crack the given cipher text
-char *crackCipherText(char *cipher);
+// Crack the given cipher text using brute force
+char *bruteForce(char *cipher);
 
 #endif /* HCCracker_h */
