@@ -243,6 +243,21 @@ static bool hasInvalidBigram(char *text)
     return false;
 }
 
+// Check for invalid characters
+static bool hasInvalidCharacters(char *text)
+{
+    // Look at all the letters of the text
+    for (int i = 0; i < strlen(text); i++)
+    {
+        char c = text[i];
+        
+        // The character is not one of the 40 in the ALPHABET (excluding '^') or a space
+        if ((c != ' ' && strchr(ALPHABET, c) == NULL) || c == '^') return true;
+    }
+    
+    return false;
+}
+
 // Check to see if the encoding has only one bit in it
 static bool isSingleton(int charValue)
 {
@@ -361,6 +376,12 @@ char *encryptText(char *text, char *key)
     if (hasInvalidBigram(text))
     {
         fprintf(stderr, "Invalid bigram present in text. Cannot contain OE, SN, PP, NS, or EO substring\n");
+        
+        return NULL;
+    }
+    else if (hasInvalidCharacters(text))
+    {
+        fprintf(stderr, "Invalid characters present in text. Text must only use characters %s\n", ALPHABET);
         
         return NULL;
     }
