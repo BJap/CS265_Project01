@@ -210,6 +210,39 @@ static void generateTables(char *key)
 
 #pragma mark ENCRYPTION STARTS HERE
 
+// Check for invalid bigrams
+static bool hasInvalidBigram(char *text)
+{
+    // Look at all but the last letter of the text
+    for (int i = 0; i < strlen(text) - 1; i++)
+    {
+        char c = text[i];
+        
+        if (c == 'O')
+        {
+            if (text[i + 1] == 'E') return true; // OE
+        }
+        else if (c == 'N')
+        {
+            if (text[i + 1] == 'S') return true; // NS
+        }
+        else if (c == 'P')
+        {
+            if (text[i + 1] == 'P') return true; // PP
+        }
+        else if (c == 'S')
+        {
+            if (text[i + 1] == 'N') return true; // SN
+        }
+        else if (c == 'E')
+        {
+            if (text[i + 1] == 'O') return true; // EO
+        }
+    }
+    
+    return false;
+}
+
 // Check to see if the encoding has only one bit in it
 static bool isSingleton(int charValue)
 {
@@ -325,6 +358,13 @@ static char getNextPadChar()
 
 char *encryptText(char *text, char *key)
 {
+    if (hasInvalidBigram(text))
+    {
+        fprintf(stderr, "Invalid bigram present in text. Cannot contain OE, SN, PP, NS, or EO substring\n");
+        
+        return NULL;
+    }
+    
     bool singletonLast = false;
     
     cipherPos = 0;

@@ -58,7 +58,7 @@ static void testEncryptionDecryption(char *plainText)
     free(text);
     free(cipher);
 }
-
+/*
 static void testCracker(char *cipher, char *expected)
 {
     char *text = bruteForce(cipher);
@@ -67,7 +67,7 @@ static void testCracker(char *cipher, char *expected)
     
     free(text);
 }
-
+*/
 int main(int argc, const char * argv[])
 {
     testKeyGen();
@@ -80,9 +80,6 @@ int main(int argc, const char * argv[])
     
     testEncryptionDecryption(SIMPLE_TEXT);
     testEncryptionDecryption(LONGER_TEXT);
-    
-    testCracker(SIMPLE_CIPHER, SIMPLE_TEXT);
-    testCracker(LONGER_CIPHER, LONGER_TEXT);
     
     return 0;
 }
