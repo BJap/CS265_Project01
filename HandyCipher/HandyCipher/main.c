@@ -60,6 +60,17 @@ static void testInvalidBigrams()
     cipher = encryptText("EO", TEST_KEY);
     
     assert(cipher == NULL && "Text should not have been able to be encrypted");
+    
+    free(cipher);
+}
+
+static void testInvalidChar(char *text)
+{
+    char *cipher = encryptText(text, TEST_KEY);
+    
+    assert(cipher == NULL && "Text should not have been able to be encrypted");
+    
+    free(cipher);
 }
 
 static void testDecryption(char *cipher, char *expected)
@@ -99,6 +110,8 @@ int main(int argc, const char * argv[])
     testEncryption(LONGER_TEXT);
     
     testInvalidBigrams();
+    
+    testInvalidChar("&");
     
     testDecryption(SIMPLE_CIPHER, SIMPLE_TEXT);
     testDecryption(LONGER_CIPHER, LONGER_TEXT);
