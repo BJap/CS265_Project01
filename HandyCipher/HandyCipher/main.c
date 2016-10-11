@@ -39,6 +39,29 @@ static void testEncryption(char *text)
     free(cipher);
 }
 
+static void testInvalidBigrams()
+{
+    char *cipher = encryptText("OE", TEST_KEY);
+    
+    assert(cipher == NULL && "Text should not have been able to be encrypted");
+    
+    cipher = encryptText("NS", TEST_KEY);
+    
+    assert(cipher == NULL && "Text should not have been able to be encrypted");
+    
+    cipher = encryptText("PP", TEST_KEY);
+    
+    assert(cipher == NULL && "Text should not have been able to be encrypted");
+    
+    cipher = encryptText("SN", TEST_KEY);
+    
+    assert(cipher == NULL && "Text should not have been able to be encrypted");
+    
+    cipher = encryptText("EO", TEST_KEY);
+    
+    assert(cipher == NULL && "Text should not have been able to be encrypted");
+}
+
 static void testDecryption(char *cipher, char *expected)
 {
     char *text = decryptText(cipher, TEST_KEY);
@@ -58,22 +81,24 @@ static void testEncryptionDecryption(char *plainText)
     free(text);
     free(cipher);
 }
-/*
-static void testCracker(char *cipher, char *expected)
+
+/*static void testCracker(char *cipher, char *expected)
 {
     char *text = bruteForce(cipher);
 
     assert(strcmp(expected, text) == 0 && "Text did not crack correctly");
     
     free(text);
-}
-*/
+}*/
+
 int main(int argc, const char * argv[])
 {
     testKeyGen();
     
     testEncryption(SIMPLE_TEXT);
     testEncryption(LONGER_TEXT);
+    
+    testInvalidBigrams();
     
     testDecryption(SIMPLE_CIPHER, SIMPLE_TEXT);
     testDecryption(LONGER_CIPHER, LONGER_TEXT);
