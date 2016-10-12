@@ -210,39 +210,6 @@ static void generateTables(char *key)
 
 #pragma mark ENCRYPTION STARTS HERE
 
-// Check for invalid bigrams
-static bool hasInvalidBigram(char *text)
-{
-    // Look at all but the last letter of the text
-    for (int i = 0; i < strlen(text) - 1; i++)
-    {
-        char c = text[i];
-        
-        if (c == 'O')
-        {
-            if (text[i + 1] == 'E') return true; // OE
-        }
-        else if (c == 'N')
-        {
-            if (text[i + 1] == 'S') return true; // NS
-        }
-        else if (c == 'P')
-        {
-            if (text[i + 1] == 'P') return true; // PP
-        }
-        else if (c == 'S')
-        {
-            if (text[i + 1] == 'N') return true; // SN
-        }
-        else if (c == 'E')
-        {
-            if (text[i + 1] == 'O') return true; // EO
-        }
-    }
-    
-    return false;
-}
-
 // Check for invalid characters
 static bool hasInvalidCharacters(char *text)
 {
@@ -373,13 +340,7 @@ static char getNextPadChar()
 
 char *encryptText(char *text, char *key)
 {
-    if (hasInvalidBigram(text))
-    {
-        fprintf(stderr, "Invalid bigram present in text. Cannot contain OE, SN, PP, NS, or EO substring\n");
-        
-        return NULL;
-    }
-    else if (hasInvalidCharacters(text))
+    if (hasInvalidCharacters(text))
     {
         fprintf(stderr, "Invalid characters present in text. Text must only use characters %s\n", ALPHABET);
         
@@ -605,7 +566,7 @@ char *decryptText(char *cipher, char *key)
                 // something is wrong if we get more than 5 characters from a substitution
                 if (charInPos > 5)
                 {
-                    fprintf(stderr, "Too many characters\n");
+                    // fprintf(stderr, "Too many characters\n");
                     
                     text[textPos] = '\0';
                     
