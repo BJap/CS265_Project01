@@ -12,7 +12,11 @@
 #include <time.h>
 #include "HCKeyGen.h"
 
+#pragma mark CONSTANTS
+
 #define random() rand()
+
+#pragma mark KEY GENERATORS
 
 char *generateKey()
 {
@@ -72,7 +76,7 @@ char *generateSubKey(char *key)
     return subKey;
 }
 
-void generateSubstitution(char *subKey,  int *substitution)
+void generateSubstitution(char *subKey, int *substitution)
 {
     size_t subKeyLen = strlen(subKey);
     

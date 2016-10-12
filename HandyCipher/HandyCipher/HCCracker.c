@@ -13,6 +13,8 @@
 #include "HCCracker.h"
 #include "HCKeyGen.h"
 
+#pragma mark CONSTANTS AND VARIABLES
+
 #define random() rand()
 #define MAX_BRUTE_ATTEMPTS 1000000
 
@@ -20,11 +22,14 @@ static char pKey[KEY_LENGTH + 1];
 static int bruteCount = 0;
 static time_t bruteStart;
 
+#pragma mark TEXT VALIDATION
+
 // Check the top 10, 3+ length most commonly used words in the English language
 // Source: https://en.wikipedia.org/wiki/Most_common_words_in_English
 static bool containsCommonWord(char *text)
 {
-    if (strstr(text, " THE ") != NULL) return true;
+    if (text == NULL) return false;
+    else if (strstr(text, " THE ") != NULL) return true;
     else if (strstr(text, " AND ") != NULL) return true;
     else if (strstr(text, " THAT ") != NULL) return true;
     else if (strstr(text, " HAVE ") != NULL) return true;
@@ -37,8 +42,10 @@ static bool containsCommonWord(char *text)
     else return false;
 }
 
+#pragma mark BRUTE FORCE ATTACK
+
 // Recursively check every key until the first possible candidate is found
-static bool permute(char *cipher, int depth)
+static bool permute(char *cipher, int depth, char *known)
 {
     if (depth == KEY_LENGTH)
     {
@@ -48,14 +55,20 @@ static bool permute(char *cipher, int depth)
             time_t bruteEnd = time(NULL);
             int time = (int) (bruteEnd - bruteStart);
             
-            printf("%d keys tried already with %d second(s) passed\n", MAX_BRUTE_ATTEMPTS , time);
+            printf("\n%d keys tried already with %d second(s) passed\n", MAX_BRUTE_ATTEMPTS , time);
         }
         
         bruteCount++;
         
         char *text = decryptText(cipher, pKey);
         
-        bool match = containsCommonWord(text);
+        bool match = false;
+        
+        if (text != NULL)
+        {
+            if (known != NULL) match = strstr(text, known);
+            else match = containsCommonWord(text);
+        }
 
         free(text);
         
@@ -70,25 +83,34 @@ static bool permute(char *cipher, int depth)
             pKey[depth] = pKey[i];
             pKey[i] = temp;
             
-            if (permute(cipher, depth + 1)) return true;
+            if (permute(cipher, depth + 1, known)) return true;
         }
     }
     
     return false;
 }
 
-char *bruteForce(char *cipher)
+char *bruteForceWithText(char *cipher, char *known)
 {
     memcpy(pKey, ALPHABET, KEY_LENGTH + 1);
     bruteCount = 0;
     bruteStart = time(NULL);
     
-    permute(cipher, 0);
+    permute(cipher, 0, known);
     
-    printf("Possible key is: %s\n", pKey);
+    char *text = decryptText(cipher, pKey);
+    
+    printf("\nCipher: %s\nPossible Text: %s\nPossible Key: %s\n", cipher, text, pKey);
     
     return decryptText(cipher, pKey);
 }
+
+char *bruteForce(char *cipher)
+{
+    return bruteForceWithText(cipher, NULL);
+}
+
+#pragma mark PRN WEAKNESS ATTACK
 
 // Make a key with a unix time srand seed
 char *generateSeededKey(time_t seed)
@@ -117,31 +139,6 @@ char *generateSeededKey(time_t seed)
     return key;
 }
 
-char *bruteWithSeed(char *cipher, time_t start, time_t end)
-{
-    char *key = NULL;
-    char *text = NULL;
-    
-    // check all unix times in a given range as srand seeds
-    for (time_t i = start; i <= end; i++)
-    {
-        // progress indicator to appease the user
-        if (i % 1000 == 0) printf("Date: %li\n", i);
-        
-        key = generateSeededKey(i);
-        text = decryptText(cipher, key);
-        
-        free(key);
-        
-        // return the first string to match with a common word
-        if (text != NULL && containsCommonWord(text)) return text;
-        
-        free(text);
-    }
-    
-    return NULL;
-}
-
 char *bruteWithSeedAndText(char *cipher, char *known, time_t start, time_t end)
 {
     char *key = NULL;
@@ -157,11 +154,20 @@ char *bruteWithSeedAndText(char *cipher, char *known, time_t start, time_t end)
         text = decryptText(cipher, key);
         
         // the text and key are found
-        if (text != NULL && strstr(text, known))
+        if (text != NULL)
         {
-            printf("Text: %s\n Key: %s\n", text, key);
-            
-            return text;
+            if (known != NULL && strstr(text, known))
+            {
+                printf("\nCipher: %s\nText: %s\nPossible Key: %s\n", cipher, text, key);
+                
+                return text;
+            }
+            else if (known == NULL && containsCommonWord(text))
+            {
+                printf("\nCipher: %s\nPossible Text: %s\nPossible Key: %s\n", cipher, text, key);
+                
+                return text;
+            }
         }
         
         free(key);
@@ -169,4 +175,9 @@ char *bruteWithSeedAndText(char *cipher, char *known, time_t start, time_t end)
     }
     
     return NULL;
+}
+
+char *bruteWithSeed(char *cipher, time_t start, time_t end)
+{
+    return bruteWithSeedAndText(cipher, NULL, start, end);
 }

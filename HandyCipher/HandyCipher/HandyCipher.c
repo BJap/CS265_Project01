@@ -13,6 +13,7 @@
 #include "HCKeyGen.h"
 
 #pragma mark SHARED VARIABLES
+
 static int  cipherPos = 0;      // current slot in the cipher to encrypt into or from which to decrypt
 static char keyTable[5][5];     // key table
 static char padTable[15];       // padding table
@@ -23,6 +24,7 @@ static char tuple[6];           // the row, column, or diagonal randomly selecte
 #define random() rand()
 
 #pragma mark ENCRYPTION VARIABLES
+
 static int  charMap[128];       // character to number mapping
 static char subTuple[6];        // the characters matching with '1' bits of the number for the character mapping
 static char mixTuple[6];        // the random arragement of the selected characters in subTuple
@@ -31,6 +33,7 @@ static char lastMixTuple[6];    // the last random arragement of the selected ch
 static char lastPad[6];         // the last padding characters used that cannot be reused
 
 #pragma mark DECRYPTION VARIABLES
+
 static int pairMap[128];        // character to table position encoding mapping
 
 #pragma mark LOOKUP TABLES
