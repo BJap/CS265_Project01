@@ -90,6 +90,7 @@ char *bruteForce(char *cipher)
     return decryptText(cipher, pKey);
 }
 
+// Make a key with a unix time srand seed
 char *generateSeededKey(time_t seed)
 {
     char *key = malloc(KEY_LENGTH + 1);
@@ -121,13 +122,18 @@ char *bruteWithSeed(char *cipher, time_t start, time_t end)
     char *key = NULL;
     char *text = NULL;
     
+    // check all unix times in a given range as srand seeds
     for (time_t i = start; i <= end; i++)
     {
+        // progress indicator to appease the user
+        if (i % 1000 == 0) printf("Date: %li\n", i);
+        
         key = generateSeededKey(i);
         text = decryptText(cipher, key);
         
         free(key);
         
+        // return the first string to match with a common word
         if (text != NULL && containsCommonWord(text)) return text;
         
         free(text);
@@ -141,12 +147,16 @@ char *bruteWithSeedAndText(char *cipher, char *known, time_t start, time_t end)
     char *key = NULL;
     char *text = NULL;
     
-    for (time_t i = end; i >= start; i--)
+    // check all unix times in a given range as srand seeds
+    for (time_t i = start; i <= end; i++)
     {
+        // progress indicator to appease the user
         if (i % 1000 == 0) printf("Date: %li\n", i);
+        
         key = generateSeededKey(i);
         text = decryptText(cipher, key);
         
+        // the text and key are found
         if (text != NULL && strstr(text, known))
         {
             printf("Text: %s\n Key: %s\n", text, key);
