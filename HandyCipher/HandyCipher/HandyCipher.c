@@ -378,13 +378,13 @@ char *encryptText(char *text, char *key)
 {
     if (hasInvalidBigram(text))
     {
-        fprintf(stderr, "\nInvalid bigram present in text. Cannot contain %c%c, %c%c, %c%c, %c%c, or %c%c substrings\n", T[0][0], T[2][2], T[0][1], T[1][1], T[0][4], T[0][4], T[1][1], T[0][1], T[2][2], T[0][0]);
+        fprintf(stderr, "\nInvalid bigram present in text. Cannot contain %c%c, %c%c, %c%c, %c%c, or %c%c\n", T[0][0], T[2][2], T[0][1], T[1][1], T[0][4], T[0][4], T[1][1], T[0][1], T[2][2], T[0][0]);
         
         return NULL;
     }
     else if (hasInvalidCharacters(text))
     {
-        fprintf(stderr, "\nInvalid characters present in text. Text must only use characters %s\n", ALPHABET);
+        fprintf(stderr, "\nInvalid characters present in text: %s\nText must only use characters %s\n", text, ALPHABET);
         
         return NULL;
     }

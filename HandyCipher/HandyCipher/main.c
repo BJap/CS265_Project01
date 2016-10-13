@@ -67,11 +67,24 @@ static void testInvalidBigram(char *text)
     free(cipher);
 }
 
-static void testInvalidChar(char *text)
+static void testInvalidChars()
 {
-    char *cipher = encryptText(text, TEST_KEY);
+    char *cipher = NULL;
     
-    assert(cipher == NULL && "Text should not have been able to be encrypted");
+    for (int i = 0; i <= 255; i++)
+    {
+        if (i == '^' || (!strchr(ALPHABET, i) && i != ' '))
+        {
+            char c[2];
+            c[0] = i;
+            c[1] = '\0';
+            
+            cipher = encryptText(c, TEST_KEY);
+            
+            assert(cipher == NULL && "Text should not have been able to be encrypted");
+        }
+        
+    }
     
     free(cipher);
 }
@@ -140,7 +153,7 @@ int main(int argc, const char * argv[])
     testInvalidBigram("RODEO");     // EO
     printf(("\nCheck for Invalid Bigrams: PASS\n"));
     
-    testInvalidChar("&");
+    testInvalidChars();
     printf(("\nCheck for Invalid Characters: PASS\n"));
     
     testDecryption(SIMPLE_CIPHER, SIMPLE_TEXT);
