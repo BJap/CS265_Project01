@@ -9,7 +9,6 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include "HCKeyGen.h"
 
 #pragma mark CONSTANTS
@@ -20,9 +19,14 @@
 
 char *generateKey()
 {
+    return generateSeededKey((unsigned) time(NULL));
+}
+
+char *generateSeededKey(time_t seed)
+{
     char *key = malloc(KEY_LENGTH + 1);
     
-    srand((unsigned) time(NULL));
+    srand((unsigned) seed);
     
     for (int i = 0; i < KEY_LENGTH; i++)
     {

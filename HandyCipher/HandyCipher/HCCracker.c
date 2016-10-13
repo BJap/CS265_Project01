@@ -90,6 +90,11 @@ static bool permute(char *cipher, int depth, char *known)
     return false;
 }
 
+char *bruteForce(char *cipher)
+{
+    return bruteForceWithText(cipher, NULL);
+}
+
 char *bruteForceWithText(char *cipher, char *known)
 {
     memcpy(pKey, ALPHABET, KEY_LENGTH + 1);
@@ -105,38 +110,11 @@ char *bruteForceWithText(char *cipher, char *known)
     return decryptText(cipher, pKey);
 }
 
-char *bruteForce(char *cipher)
-{
-    return bruteForceWithText(cipher, NULL);
-}
-
 #pragma mark PRN WEAKNESS ATTACK
 
-// Make a key with a unix time srand seed
-char *generateSeededKey(time_t seed)
+char *bruteWithSeed(char *cipher, time_t start, time_t end)
 {
-    char *key = malloc(KEY_LENGTH + 1);
-    
-    srand((unsigned) seed);
-    
-    for (int i = 0; i < KEY_LENGTH; i++)
-    {
-        char c;
-        
-        do
-        {
-            int r = random() % KEY_LENGTH;
-            
-            c = ALPHABET[r];
-            
-        } while (memchr(key, c, i) != NULL);
-        
-        key[i] = c;
-    }
-    
-    key[KEY_LENGTH] = '\0';
-    
-    return key;
+    return bruteWithSeedAndText(cipher, NULL, start, end);
 }
 
 char *bruteWithSeedAndText(char *cipher, char *known, time_t start, time_t end)
@@ -175,9 +153,4 @@ char *bruteWithSeedAndText(char *cipher, char *known, time_t start, time_t end)
     }
     
     return NULL;
-}
-
-char *bruteWithSeed(char *cipher, time_t start, time_t end)
-{
-    return bruteWithSeedAndText(cipher, NULL, start, end);
 }

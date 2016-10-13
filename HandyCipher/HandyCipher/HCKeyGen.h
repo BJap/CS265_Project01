@@ -10,6 +10,7 @@
 #define HCKeyGen_h
 
 #include <stdbool.h>
+#include <time.h>
 
 #define KEY_LENGTH 41
 #define SUBKEY_LENGTH 31
@@ -17,6 +18,9 @@
 
 // Generate a random key for HC encryption
 char *generateKey();
+
+// Generate a key with a unix time srand seed
+char *generateSeededKey(time_t seed);
 
 // Validate that the key matches HandyCipher standards
 bool validateKey();
