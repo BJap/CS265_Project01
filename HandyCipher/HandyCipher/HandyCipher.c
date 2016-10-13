@@ -211,7 +211,40 @@ static void generateTables(char *key)
     }
 }
 
-#pragma mark ENCRYPTION STARTS HERE
+#pragma mark ENCRYPTION STARTS HERE// Check for invalid bigrams
+
+// Check for invalid bigrams
+static bool hasInvalidBigram(char *text)
+{
+    // Look at all but the last letter of the text
+    for (int i = 0; i < strlen(text) - 1; i++)
+    {
+        char c = text[i];
+        
+        if (c == T[0][0])
+        {
+            if (text[i + 1] == T[2][2]) return true;
+        }
+        else if (c == T[0][1])
+        {
+            if (text[i + 1] == T[1][1]) return true;
+        }
+        else if (c == T[0][4])
+        {
+            if (text[i + 1] == T[0][4]) return true;
+        }
+        else if (c == T[1][1])
+        {
+            if (text[i + 1] == T[0][1]) return true;
+        }
+        else if (c == T[2][2])
+        {
+            if (text[i + 1] == T[0][0]) return true;
+        }
+    }
+    
+    return false;
+}
 
 // Check for invalid characters
 static bool hasInvalidCharacters(char *text)
@@ -343,9 +376,15 @@ static char getNextPadChar()
 
 char *encryptText(char *text, char *key)
 {
-    if (hasInvalidCharacters(text))
+    if (hasInvalidBigram(text))
     {
-        fprintf(stderr, "Invalid characters present in text. Text must only use characters %s\n", ALPHABET);
+        fprintf(stderr, "\nInvalid bigram present in text. Cannot contain %c%c, %c%c, %c%c, %c%c, or %c%c substrings\n", T[0][0], T[2][2], T[0][1], T[1][1], T[0][4], T[0][4], T[1][1], T[0][1], T[2][2], T[0][0]);
+        
+        return NULL;
+    }
+    else if (hasInvalidCharacters(text))
+    {
+        fprintf(stderr, "\nInvalid characters present in text. Text must only use characters %s\n", ALPHABET);
         
         return NULL;
     }
