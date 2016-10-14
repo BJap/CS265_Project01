@@ -213,41 +213,25 @@ static void generateTables(char *key)
 
 #pragma mark ENCRYPTION STARTS HERE// Check for invalid bigrams
 
-// Check for invalid bigrams
-static bool hasInvalidBigram(char *text)
+// Check for invalid bigrams and return the location of the first one found or -1
+static int hasInvalidBigram(char *text)
 {
     // Look at all but the last letter of the text
     for (int i = 0; i < strlen(text) - 1; i++)
     {
-        char c = text[i];
-        
-        if (c == T[0][0])
-        {
-            if (text[i + 1] == T[2][2]) return true;
-        }
-        else if (c == T[0][1])
-        {
-            if (text[i + 1] == T[1][1]) return true;
-        }
-        else if (c == T[0][4])
-        {
-            if (text[i + 1] == T[0][4]) return true;
-        }
-        else if (c == T[1][1])
-        {
-            if (text[i + 1] == T[0][1]) return true;
-        }
-        else if (c == T[2][2])
-        {
-            if (text[i + 1] == T[0][0]) return true;
-        }
+        // The character and the next character together form an invalid bigram
+        if ((text[i] == T[0][0] && text[i + 1] == T[2][2]) ||
+            (text[i] == T[0][1] && text[i + 1] == T[1][1]) ||
+            (text[i] == T[0][4] && text[i + 1] == T[0][4]) ||
+            (text[i] == T[1][1] && text[i + 1] == T[0][1]) ||
+            (text[i] == T[2][2] && text[i + 1] == T[0][0])) return i;
     }
     
-    return false;
+    return -1;
 }
 
-// Check for invalid characters
-static bool hasInvalidCharacters(char *text)
+// Check for invalid characters and return the location of the first one found or -1
+static int hasInvalidCharacters(char *text)
 {
     // Look at all the letters of the text
     for (int i = 0; i < strlen(text); i++)
@@ -255,10 +239,10 @@ static bool hasInvalidCharacters(char *text)
         char c = text[i];
         
         // The character is not one of the 40 in the ALPHABET (excluding '^') or a space
-        if ((c != ' ' && strchr(ALPHABET, c) == NULL) || c == '^') return true;
+        if ((c != ' ' && strchr(ALPHABET, c) == NULL) || c == '^') return i;
     }
     
-    return false;
+    return -1;
 }
 
 // Check to see if the encoding has only one bit in it
@@ -376,15 +360,20 @@ static char getNextPadChar()
 
 char *encryptText(char *text, char *key)
 {
-    if (hasInvalidBigram(text))
+    int bigram = hasInvalidBigram(text);
+    
+    if (bigram != -1)
     {
-        fprintf(stderr, "\nInvalid bigram present in text. Cannot contain %c%c, %c%c, %c%c, %c%c, or %c%c\n", T[0][0], T[2][2], T[0][1], T[1][1], T[0][4], T[0][4], T[1][1], T[0][1], T[2][2], T[0][0]);
+        fprintf(stderr, "\nInvalid bigram '%c%c' present in text: '%s'\nCannot contain %c%c, %c%c, %c%c, %c%c, or %c%c\n", text[bigram], text[bigram + 1], text, T[0][0], T[2][2], T[0][1], T[1][1], T[0][4], T[0][4], T[1][1], T[0][1], T[2][2], T[0][0]);
         
         return NULL;
     }
-    else if (hasInvalidCharacters(text))
+                                                                                                                        
+    int badChar = hasInvalidCharacters(text);
+                                                                                                                        
+    if (badChar != -1)
     {
-        fprintf(stderr, "\nInvalid characters present in text: %s\nText must only use characters %s\n", text, ALPHABET);
+        fprintf(stderr, "\nInvalid character '%c' present in text: '%s'\nText must only use characters %s\n", text[badChar], text, ALPHABET);
         
         return NULL;
     }
@@ -608,7 +597,7 @@ char *decryptText(char *cipher, char *key)
                 // something is wrong if we get more than 5 characters from a substitution
                 if (charInPos > 5)
                 {
-                    // fprintf(stderr, "Too many characters\n");
+                    fprintf(stderr, "\nToo many characters\n");
                     
                     text[textPos] = '\0';
                     

@@ -58,11 +58,22 @@ static void testEncryption(char *text)
     free(cipher);
 }
 
-static void testInvalidBigram(char *text)
+static void testInvalidBigrams()
 {
-    char *cipher = encryptText(text, TEST_KEY);
+    char *cipher = NULL;
+    int s[5] = { 0, 1, 4, 9, 18 };
     
-    assert(cipher == NULL && "Text should not have been able to be encrypted");
+    for (int i = 0; i < 5; i++)
+    {
+        char c[3];
+        c[0] = TEST_KEY[s[0 + i]];
+        c[1] = TEST_KEY[s[4 - i]];
+        c[2] = '\0';
+        
+        cipher = encryptText(c, TEST_KEY);
+        
+        assert(cipher == NULL && "Text should not have been able to be encrypted");
+    }
     
     free(cipher);
 }
@@ -146,11 +157,7 @@ int main(int argc, const char * argv[])
     testEncryption(LONGER_TEXT);
     printf(("\nEncryption: PASS\n"));
     
-    testInvalidBigram("CHLOE");     // OE
-    testInvalidBigram("BURNS");     // NS
-    testInvalidBigram("PEPPER");    // PP
-    testInvalidBigram("SNAP");      // SN
-    testInvalidBigram("RODEO");     // EO
+    testInvalidBigrams();
     printf(("\nCheck for Invalid Bigrams: PASS\n"));
     
     testInvalidChars();
