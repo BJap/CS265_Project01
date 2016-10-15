@@ -3,7 +3,7 @@
 //  HandyCipher
 //
 //  Created by Bobby Jap on 9/18/16.
-//  Copyright © 2016 Bobby Jap, Ravee Khandagale. All rights reserved.
+//  Copyright © 2016 Bobby Jap. All rights reserved.
 //
 
 #include <ctype.h>
